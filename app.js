@@ -1,19 +1,20 @@
-const http = require("http");
-const fs = require("fs");
+const express = require("express");
+const app = express();
+const path = require("path");
 
-const server = http.createServer((req, res) => {
-  //   const text = fs.readFileSync("./content/big.txt", "utf8");
-  //   res.end(text);
-  const fileStream = fs.createReadStream("./content/big.txt", "utf8");
-  fileStream.on("data", () => {
-    fileStream.pipe(res);
-  });
-  fileStream.on("error", (err) => {
-    res.end(err);
-  });
-  //   res.end(text);
+// Set up static files and middleware
+app.use(express.static("./html"));
+
+app.get("/", (req, res) => {
+  res.status(200).sendFile(path.resolve(__dirname, "./html/index.html"));
 });
 
-server.listen(5050, () => {
-  console.log("Server running on port: 5050...");
+// Resources Not Found
+app.all("*", (req, res) => {
+  res.status(404).send("Requested Resources Not Available");
+});
+
+// Listen on Port 5050
+app.listen(5050, () => {
+  console.log("Server Running on Port 5050.....");
 });
