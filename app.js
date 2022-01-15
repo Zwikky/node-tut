@@ -1,20 +1,18 @@
 const express = require("express");
 const app = express();
-const path = require("path");
 
-// Set up static files and middleware
-app.use(express.static("./html"));
+const logger = (req, res, next) => {
+  const method = req.method;
+  const url = req.url;
+  const time = new Date().getFullYear();
+  console.log(method, url, time);
+  next();
+};
 
-app.get("/", (req, res) => {
-  res.status(200).sendFile(path.resolve(__dirname, "./html/index.html"));
+app.get("/", logger, (req, res) => {
+  res.json({ success: true });
 });
 
-// Resources Not Found
-app.all("*", (req, res) => {
-  res.status(404).send("Requested Resources Not Available");
-});
-
-// Listen on Port 5050
 app.listen(5050, () => {
-  console.log("Server Running on Port 5050.....");
+  console.log("Server on port 5050");
 });
